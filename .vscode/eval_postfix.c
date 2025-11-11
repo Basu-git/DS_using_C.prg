@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
-#define MAX 3 // Small stack size to demonstrate overflow
+#define MAX 3 
 char stack[MAX];
 int top = -1;
-// Push operation
 void push(char c) {
 if (top == MAX - 1) {
 printf("Stack Overflow\n");
@@ -12,7 +11,6 @@ return;
 }
 stack[++top] = c;
 }
-// Pop operation
 char pop() {
 if (top == -1) {
 printf("Stack Underflow\n");
@@ -20,7 +18,6 @@ return '\0';
 }
 return stack[top--];
 }
-// Operator precedence
 int precedence(char c) {
 switch (c) {
 case '^': return 3;
@@ -29,11 +26,9 @@ case '+': case '-': return 1;
 default: return 0;
 }
 }
-// Operator check
 int isOperator(char c) {
 return (c=='+' || c=='-' || c=='*' || c=='/' || c=='%' || c=='^');
 }
-// Main function
 int main() {
 char infix[100], postfix[100];
 int i, j, choice;
