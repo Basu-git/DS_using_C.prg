@@ -41,4 +41,4 @@ Additional lab exercises
 
 Useful for VTU / university lab exams
 
-Great for beginners learning core data structures
+Great for beginners learning core data structures..
