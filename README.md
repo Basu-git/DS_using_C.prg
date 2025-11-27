@@ -21,7 +21,7 @@ Clean and well-structured code
 Clear logic
 
 Sample outputs (where applicable)
-
+...
 🔹 Purpose of This Repository
 
 To help students revise DSA lab programs quickly
