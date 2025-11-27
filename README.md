@@ -18,7 +18,7 @@ Each program includes:
 
 Clean and well-structured code
 
-Clear logic
+Clear logic..
 
 Sample outputs (where applicable)
 ...
