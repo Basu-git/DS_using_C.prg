@@ -8,7 +8,7 @@ Arrays
 
 Strings
 ..
-Stack
+Stack..
 
 Queue
 
