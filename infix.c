@@ -1,165 +1,153 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>   // For isalnum() and isdigit()
-#include <string.h>  // For strlen()
+#include <string.h>
+#include <ctype.h>
 
-// ---------------------------
-// Function Prototypes
-// ---------------------------
+#define MAX 100
+
+char stack[MAX];
+int top = -1;
+
+void push(char c);
+char pop();
+char peek();
+int isOperator(char c);
+int precedence(char c);
 void infixToPostfix(char infix[], char postfix[]);
-int precedence(char operator);
-int isOperator(char symbol);
-void push(char stack[], int *top, char symbol);
-char pop(char stack[], int *top);
-char peek(char stack[], int top);
 
-// ---------------------------
-// Main Function
-// ---------------------------
-int main()
+int main() 
 {
-	char infix[100], postfix[100];
+    char infix[MAX], postfix[MAX];
+    int choice;
 
-	printf("Enter a valid infix expression (single-digit operands only): ");
-	scanf("%s", infix);   // Input from keyboard
+    printf("---- INFIX TO POSTFIX CONVERSION ----\n");
+    printf("\nChoose a test case:\n");
+    printf("1. Valid infix expression\n");
+    printf("2. Invalid character\n");
+    printf("3. Mismatched parentheses\n");
+    printf("4. Wrong operator sequence\n");
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
 
-	infixToPostfix(infix, postfix);
+    switch (choice) 
+    {
+        case 1:
+            strcpy(infix, "a+b*c^d/e-f");
+            break;
+        case 2:
+            strcpy(infix, "a+b@c");
+            break;
+        case 3:
+            strcpy(infix, "(a+b*(c-d)");
+            break;
+        case 4:
+            strcpy(infix, "a++b*c");
+            break;
+        default:
+            printf("Invalid choice!\n");
+            return 0;
+    }
 
-	printf("\nPostfix Expression: %s\n", postfix);
-	return 0;
+    printf("\nGiven Infix Expression: %s\n", infix);
+
+    infixToPostfix(infix, postfix);
+
+    printf("\nPostfix Expression: %s\n", postfix);
+
+    return 0;
 }
 
-// ---------------------------
-// Function: infixToPostfix()
-// Converts infix to postfix
-// ---------------------------
-void infixToPostfix(char infix[], char postfix[])
+void push(char c) 
 {
-	char stack[100];
-	int top = -1;
-	int i = 0, j = 0;
-
-	while (infix[i] != '\0')
-	{
-		// Case 1: Operand (AbZ, abz, or 0b9)
-		if (isalnum(infix[i]))
-		{
-			postfix[j++] = infix[i];
-		}
-		// Case 2: Left Parenthesis '('
-		else if (infix[i] == '(')
-		{
-			push(stack, &top, infix[i]);
-		}
-		// Case 3: Right Parenthesis ')'
-		else if (infix[i] == ')')
-		{
-			while (top != -1 && peek(stack, top) != '(')
-			{
-				postfix[j++] = pop(stack, &top);
-			}
-			if (top == -1)
-			{
-				printf("\nError: Mismatched parentheses!\n");
-				exit(EXIT_FAILURE);
-			}
-			pop(stack, &top); // Discard '('
-		}
-		// Case 4: Operator
-		else if (isOperator(infix[i]))
-		{
-			while (top != -1 && precedence(peek(stack, top)) >= precedence(infix[i]))
-			{
-				// Handle right-associative '^'
-				if (infix[i] == '^' && peek(stack, top) == '^')
-					break;
-				postfix[j++] = pop(stack, &top);
-			}
-			push(stack, &top, infix[i]);
-		}
-		// Case 5: Invalid Character
-		else
-		{
-			printf("\nError: Invalid character '%c' in expression!\n", infix[i]);
-			exit(EXIT_FAILURE);
-		}
-
-		i++;
-	}
-
-	// Pop all remaining operators from stack
-	while (top != -1)
-	{
-		if (peek(stack, top) == '(')
-		{
-			printf("\nError: Mismatched parentheses!\n");
-			exit(EXIT_FAILURE);
-		}
-		postfix[j++] = pop(stack, &top);
-	}
-
-	postfix[j] = '\0'; // Null terminate the postfix expression
+    stack[++top] = c;
 }
 
-// ---------------------------
-// Function: isOperator()
-// Checks if symbol is operator
-// ---------------------------
-int isOperator(char symbol)
+char pop() 
 {
-	return (symbol == '+' || symbol == '-' ||
-	        symbol == '*' || symbol == '/' ||
-	        symbol == '%' || symbol == '^');
+    return stack[top--];
 }
 
-// ---------------------------
-// Function: precedence()
-// Returns precedence of operator
-// ---------------------------
-int precedence(char operator)
+char peek() 
 {
-	switch (operator)
-	{
-	case '^':
-		return 3;
-	case '*':
-	case '/':
-	case '%':
-		return 2;
-	case '+':
-	case '-':
-		return 1;
-	default:
-		return 0;
-	}
+    return (top == -1) ? '\0' : stack[top];
 }
 
-// ---------------------------
-// Stack Operations
-// ---------------------------
-void push(char stack[], int *top, char symbol)
+int isOperator(char c) 
 {
-	if (*top == 99)
-	{
-		printf("\nError: Stack overflow!\n");
-		exit(EXIT_FAILURE);
-	}
-	stack[++(*top)] = symbol;
+    return (c == '+' || c == '-' || c == '*' ||
+            c == '/' || c == '%' || c == '^');
 }
 
-char pop(char stack[], int *top)
+int precedence(char c) 
 {
-	if (*top == -1)
-	{
-		printf("\nError: Stack underflow!\n");
-		exit(EXIT_FAILURE);
-	}
-	return stack[(*top)--];
+    switch (c) 
+    {
+        case '^': return 3;
+        case '*':
+        case '/':
+        case '%': return 2;
+        case '+':
+        case '-': return 1;
+        default: return 0;
+    }
 }
 
-char peek(char stack[], int top)
+void infixToPostfix(char infix[], char postfix[]) 
 {
-	if (top == -1)
-		return '\0';
-	return stack[top];
+    int i = 0, j = 0;
+    char symbol;
+
+    while ((symbol = infix[i++]) != '\0') 
+    {
+        if (isalnum(symbol)) 
+        {
+            postfix[j++] = symbol;
+        }
+        else if (symbol == '(') 
+        {
+            push(symbol);
+        }
+        else if (symbol == ')') 
+        {
+            while (top != -1 && peek() != '(')
+                postfix[j++] = pop();
+            if (top == -1) 
+            {
+                printf("\nError: Mismatched parentheses!\n");
+                exit(EXIT_FAILURE);
+            }
+            pop();
+        }
+        else if (isOperator(symbol)) 
+        {
+            if (i == 1 || isOperator(infix[i - 2])) 
+            {
+                printf("\nError: Invalid operator sequence near '%c'\n", symbol);
+                exit(EXIT_FAILURE);
+            }
+            while (top != -1 && precedence(peek()) >= precedence(symbol)) 
+            {
+                if (symbol == '^' && peek() == '^') break;
+                postfix[j++] = pop();
+            }
+            push(symbol);
+        }
+        else 
+        {
+            printf("\nError: Invalid character '%c' in expression!\n", symbol);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    while (top != -1) 
+    {
+        if (peek() == '(') 
+        {
+            printf("\nError: Mismatched parentheses!\n");
+            exit(EXIT_FAILURE);
+        }
+        postfix[j++] = pop();
+    }
+
+    postfix[j] = '\0';
 }
