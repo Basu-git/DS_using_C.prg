@@ -1,4 +1,4 @@
-..📘 DSA Lab Programs
+...📘 DSA Lab Programs
 
 This repository contains implementations of Data Structures and Algorithms (DSA) covered in lab sessions, currently updated up to Circular Queue. All programs are written in a simple and easy-to-understand manner for quick learning and exam preparation....
 
