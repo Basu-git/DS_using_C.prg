@@ -16,7 +16,7 @@ Circular Queue
 ..
 Each program includes:
 
-Clean and well-structured code
+Clean and well-structured code..
 
 Clear logic.....
 
